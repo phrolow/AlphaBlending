@@ -40,7 +40,7 @@ int main() {
 
     alphaBlendImages(back, front, result_array, shift);
 
-    sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Mandelbrot");
+    sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "AlphaBlending");
 
     sf::Texture resultTexture;
     resultTexture.create(WIDTH, HEIGHT);

@@ -11,7 +11,7 @@ const char * const frontPath  = "Pictures/AskhatCat.bmp";
 const char * const resultPath = "Pictures/Result.bmp";
 
 const unsigned int X_SHIFT = 300;
-const unsigned int Y_SHIFT = 300;
+const unsigned int Y_SHIFT = 200;
 
 void alphaBlendImages(const sf::Image back, const sf::Image front, sf::Uint8 *result, sf::Vector2u shift);
 

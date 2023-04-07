@@ -13,11 +13,13 @@ void alphaBlendArrays(const sf::Uint8 *back,   sf::Vector2u back_size,
     unsigned int y_shift = shift.y;
 
     for(unsigned int y = 0; y < front_height; y++)
-    for(unsigned int x = 0; x < front_width; x++) {
-        unsigned int back_index  = 4 * (y * back_width + x);
+    for(unsigned int x = 0; x < front_width; x++) 
+        {
+        unsigned int back_index  = 4 * ((y + y_shift) * back_width + (x + x_shift));
         unsigned int front_index = 4 * (y * front_width + x);
 
-        for(int i = 0; i < 3; i++) {
+        for(int i = 0; i < 3; i++) 
+        {
             result[back_index + i] =  (back [back_index + i]  * (255 - front[front_index + 3]) 
                                      + front[front_index + i] *        front[front_index + 3]) >> 8;
         }
