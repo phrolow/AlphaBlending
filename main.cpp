@@ -15,14 +15,14 @@ void alphaBlendImages(const sf::Image back, const sf::Image front, sf::Uint8 *re
 int main() {
     sf::Image back;
 
-    if(!back.loadFromFile(backPath)) {
+    if(!back.loadFromFile(back_path)) {
         printf("back picture not found!\n");
         exit(1);
     }
 
     sf::Image front;
 
-    if(!front.loadFromFile(frontPath)) {
+    if(!front.loadFromFile(front_path)) {
         printf("front picture not found!\n");
         exit(1);
     }
@@ -34,7 +34,7 @@ int main() {
 
     sf::Vector2u shift(X_SHIFT, Y_SHIFT);
 
-    sf::Uint8* result_array = new sf::Uint8[4 * WIDTH * HEIGHT];
+    sf::Uint8* result_array = (sf::Uint8 *) calloc(4 * WIDTH * HEIGHT, sizeof(sf::Uint8));
 
     memcpy(result_array, back.getPixelsPtr(), 4 * WIDTH * HEIGHT);  
 
@@ -48,6 +48,25 @@ int main() {
 
     sf::Sprite resultSprite(resultTexture);
 
+    sf::Font font;
+    if(!font.loadFromFile("impact.ttf")) {
+        printf("Font not found!\n");
+    }
+
+    char label[12] = {};
+
+    sf::Text text;
+    text.setFont(font);
+    text.setString(label);
+    text.setCharacterSize(24);
+    text.setFillColor(sf::Color::Black);
+
+    sf::Int64 blending_time = 0;
+    sf::Clock clock = sf::Clock();
+    sf::Time previousTime;
+    previousTime = clock.getElapsedTime();
+    sf::Time currentTime;
+
     while(window.isOpen()) {
         sf::Event event;
 
@@ -58,22 +77,32 @@ int main() {
             }
         }
 
-        alphaBlendImages(back, front, result_array, shift);
+        //alphaBlendImages(back, front, result_array, shift);
         resultTexture.update(result_array);
 
         resultSprite.setTexture(resultTexture);
 
+        currentTime = clock.getElapsedTime();
+        blending_time = currentTime.asMicroseconds() - previousTime.asMicroseconds(); 
+        previousTime = currentTime;
+
+        sprintf(label, "%lld ms", blending_time);
+        text.setString(label);
+
         window.clear();
         window.draw(resultSprite);
+        window.draw(text);
         window.display();
     }
 
     sf::Image resultImage;
         resultImage.create(WIDTH, HEIGHT, result_array);
 
-    if(!resultImage.saveToFile(resultPath)) {
+    if(!resultImage.saveToFile(result_path)) {
         printf("Failed to save result\n");
     }
+
+    free(result_array);
 
     return 0;
 }
