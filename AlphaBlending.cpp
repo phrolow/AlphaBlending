@@ -41,23 +41,25 @@ void alphaBlendArrays(const sf::Uint8 *back,   sf::Vector2u back_size,
     const __m128i   _0 =                   _mm_set1_epi8(0);
     const __m128i _255 = _mm_cvtepu8_epi16(_mm_set1_epi8(255u));
 
+    unsigned int *dest = (unsigned int*) result;
+
     for(unsigned int y = 0; y < front_height; y++)
     for(unsigned int x = 0; x < front_width; x += 4) 
     {
         unsigned int back_index  = 4 * ((y + y_shift) * back_width + (x + x_shift));
-        unsigned int front_index = 4 * (y * (front_width / 16 * 16 + 16) + x);
+        unsigned int front_index = 4 * (y * front_width + x) / 16 * 16;
 
-        __m128i fr = _mm_load_si128((__m128i*) (front + front_index)); //here
+        __m128i fr = _mm_load_si128((__m128i*) (front + front_index));
         __m128i bk = _mm_load_si128((__m128i*) (back + back_index));
 
         __m128i FR = (__m128i) _mm_movehl_ps((__m128) _0, (__m128) fr);
         __m128i BK = (__m128i) _mm_movehl_ps((__m128) _0, (__m128) bk);
 
-        fr = _mm_cvtepu8_epi32(fr);
-        bk = _mm_cvtepu8_epi32(bk);
+        fr = _mm_cvtepu8_epi16(fr);
+        bk = _mm_cvtepu8_epi16(bk);
 
-        FR = _mm_cvtepu8_epi32(FR);
-        BK = _mm_cvtepu8_epi32(BK);
+        FR = _mm_cvtepu8_epi16(FR);
+        BK = _mm_cvtepu8_epi16(BK);
 
         static const __m128i moveA = _mm_set_epi8 (Z, 14, Z, 14, Z, 14, Z, 14,
                                                    Z,  6, Z,  6, Z,  6, Z,  6);
@@ -79,15 +81,8 @@ void alphaBlendArrays(const sf::Uint8 *back,   sf::Vector2u back_size,
 
         sum = _mm_shuffle_epi8 (sum, moveSum);                                  
         SUM = _mm_shuffle_epi8 (SUM, moveSum);
-        
-        union {
-            __m128i color;
-            unsigned char rgba[16];
-        };
 
-        color = (__m128i) _mm_movelh_ps ((__m128) sum, (__m128) SUM);   
-
-        printf("(%u, %u, %u, %u)", rgba[0], rgba[1], rgba[2], rgba[3]);
+        __m128i color = (__m128i) _mm_movelh_ps ((__m128) sum, (__m128) SUM);   
 
         _mm_store_si128 ((__m128i *) (result + back_index), color);
     }

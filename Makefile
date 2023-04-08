@@ -4,5 +4,5 @@ all:
 	@g++ main.o AlphaBlending.o -o AlphaBlending -lsfml-graphics -lsfml-window -lsfml-system
 
 nosimd:
-	@gcc -c main.cpp AlphaBlendingNoSIMD.cpp -mno-sse2 -O0
+	@gcc -c main.cpp AlphaBlendingNoSIMD.cpp -mno-sse2 -O3
 	@g++ main.o AlphaBlendingNoSIMD.o -o AlphaBlending -lsfml-graphics -lsfml-window -lsfml-system

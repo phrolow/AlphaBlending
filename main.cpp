@@ -77,7 +77,7 @@ int main() {
             }
         }
 
-        //alphaBlendImages(back, front, result_array, shift);
+        alphaBlendImages(back, front, result_array, shift);
         resultTexture.update(result_array);
 
         resultSprite.setTexture(resultTexture);
