@@ -1,17 +1,5 @@
 #include "AlphaBlending.hpp"
 
-void alphaBlendImages(const sf::Image back, const sf::Image front, sf::Uint8 *result, sf::Vector2u shift) {
-    const sf::Uint8 *back_array = back.getPixelsPtr();
-    const sf::Uint8 *front_array = front.getPixelsPtr();
-
-    sf::Vector2u back_size = back.getSize();
-    sf::Vector2u front_size = front.getSize();
-
-    alphaBlendArrays(back_array,  back_size,
-                     front_array, front_size,
-                     result,      shift);
-}
-
 int main() {
     sf::Image back;
 
@@ -38,28 +26,11 @@ int main() {
 
     memcpy(result_array, back.getPixelsPtr(), 4 * WIDTH * HEIGHT);  
 
-    alphaBlendImages(back, front, result_array, shift);
+    const sf::Uint8 *back_array = back.getPixelsPtr();
+    const sf::Uint8 *front_array = front.getPixelsPtr();
 
-    sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "AlphaBlending");
-
-    sf::Texture resultTexture;
-    resultTexture.create(WIDTH, HEIGHT);
-    resultTexture.update(resultTexture);
-
-    sf::Sprite resultSprite(resultTexture);
-
-    sf::Font font;
-    if(!font.loadFromFile("impact.ttf")) {
-        printf("Font not found!\n");
-    }
-
-    char label[12] = {};
-
-    sf::Text text;
-    text.setFont(font);
-    text.setString(label);
-    text.setCharacterSize(24);
-    text.setFillColor(sf::Color::Black);
+    sf::Vector2u back_size = back.getSize();
+    sf::Vector2u front_size = front.getSize();
 
     sf::Int64 blending_time = 0;
     sf::Clock clock = sf::Clock();
@@ -67,40 +38,32 @@ int main() {
     previousTime = clock.getElapsedTime();
     sf::Time currentTime;
 
-    while(window.isOpen()) {
-        sf::Event event;
+    size_t counter = 0;
+    long long unsigned ms_counter = 0;
 
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed){
-                window.close();
-            }
-        }
-
-        alphaBlendImages(back, front, result_array, shift);
-        resultTexture.update(result_array);
-
-        resultSprite.setTexture(resultTexture);
+    while(counter < FIRST_FRAMES + NUM_FRAMES) {
+        alphaBlendArrays(back_array,    back_size,
+                        front_array,    front_size,
+                        result_array,   shift);
 
         currentTime = clock.getElapsedTime();
         blending_time = currentTime.asMicroseconds() - previousTime.asMicroseconds(); 
         previousTime = currentTime;
 
-        sprintf(label, "%lld ms", blending_time);
-        text.setString(label);
-
-        window.clear();
-        window.draw(resultSprite);
-        window.draw(text);
-        window.display();
+        if(counter >= FIRST_FRAMES)
+            ms_counter += blending_time;
+        
+        counter++;
     }
 
     sf::Image resultImage;
-        resultImage.create(WIDTH, HEIGHT, result_array);
+    resultImage.create(WIDTH, HEIGHT, result_array);
 
     if(!resultImage.saveToFile(result_path)) {
         printf("Failed to save result\n");
     }
+
+    printf("Average time: %llu ms\n", ms_counter / counter);
 
     free(result_array);
 

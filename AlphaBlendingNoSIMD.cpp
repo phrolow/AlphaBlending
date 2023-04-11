@@ -1,8 +1,8 @@
 #include "AlphaBlending.hpp"
 
 void alphaBlendArrays(const sf::Uint8 *back,   sf::Vector2u back_size,
-                            const sf::Uint8 *front,  sf::Vector2u front_size,
-                                  sf::Uint8 *result, sf::Vector2u shift) {
+                      const sf::Uint8 *front,  sf::Vector2u front_size,
+                            sf::Uint8 *result, sf::Vector2u shift) {
     unsigned int back_width  = back_size.x;
     unsigned int back_height = back_size.y;
 
