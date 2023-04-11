@@ -33,8 +33,7 @@
 
 Код написан без использования SIMD-инструкций:
 
-```
-void alphaBlendArrays(const sf::Uint8 *back,   sf::Vector2u back_size,
+```void alphaBlendArrays(const sf::Uint8 *back,   sf::Vector2u back_size,
                       const sf::Uint8 *front,  sf::Vector2u front_size,
                             sf::Uint8 *result, sf::Vector2u shift) {
     unsigned int back_width  = back_size.x;
@@ -67,8 +66,7 @@ void alphaBlendArrays(const sf::Uint8 *back,   sf::Vector2u back_size,
 
 Функция **main** вызывает функцию наложения 10000 раз, после чего подсчитывает среднее время выполнения альфа-наложения. Результат первых 100 вызовов не учитывается, ибо в течение них работает кеш-память в процессоре, уменьшая время следующих выполнений.
 
-'''
-int main() {
+```int main() {
     sf::Image back;
 
     if(!back.loadFromFile(back_path)) {
