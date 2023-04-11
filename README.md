@@ -206,7 +206,6 @@ void alphaBlendArrays(const sf::Uint8 *back,   sf::Vector2u back_size,
 
         _mm_store_si128 ((__m128i *) (result + back_index), color);
     }
-}
 ```
 
 Среднее время выполнения программы с флагом -O3 - **18 мс**, что порадовало
