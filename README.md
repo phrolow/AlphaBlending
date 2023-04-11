@@ -143,8 +143,7 @@ int main() {
 
 С целью получить меньшее время выполнения я переписал функцию **alphaBlendArrays** с использованием инструкций из расширения SSE2:
 
-```
-void alphaBlendArrays(const sf::Uint8 *back,   sf::Vector2u back_size,
+```void alphaBlendArrays(const sf::Uint8 *back,   sf::Vector2u back_size,
                       const sf::Uint8 *front,  sf::Vector2u front_size,
                             sf::Uint8 *result, sf::Vector2u shift) {
     unsigned int back_width  = back_size.x;
@@ -206,6 +205,7 @@ void alphaBlendArrays(const sf::Uint8 *back,   sf::Vector2u back_size,
 
         _mm_store_si128 ((__m128i *) (result + back_index), color);
     }
+}
 ```
 
 Среднее время выполнения программы с флагом -O3 - **18 мс**, что порадовало
